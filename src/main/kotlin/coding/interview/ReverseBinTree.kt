@@ -13,15 +13,15 @@ data class Node(var value: Int, var left: Tree, var right: Tree): Tree(value)
 data class Leaf(var value: Int): Tree(value)
 
 
-// Recursive versión, NOT tail recursion
+// Recursive version, NOT tail recursion
 fun Tree.reverse1(): Tree {
 
-    var n = this
-    when(n) {
+    var n = when(this) {
         is Node -> {
-            val (v, l, r) = n
-            n = Node(v, r.reverse1(), l.reverse1())
+            val (v, l, r) = this
+            Node(v, r.reverse1(), l.reverse1())
         }
+        is Leaf -> this
     }
 
     return n
