@@ -47,6 +47,11 @@
             <artifactId>kopykat-ksp</artifactId>
             <version>1.0-rc7</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>1.6.4</version>
+        </dependency>
     </dependencies>
 
     <build>

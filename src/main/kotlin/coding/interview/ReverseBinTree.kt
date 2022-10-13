@@ -27,8 +27,6 @@ fun Tree.reverse1(): Tree {
     return n
 }
 
-
-
 object TreeTests {
 
     val tree1 = Node(1, Node(2, Leaf(4), Leaf(5)), Node(3, Leaf(6), Leaf(7)))
