@@ -8,7 +8,7 @@ import kotlin.coroutines.intrinsics.*
 
 class Tree(val left: Tree?, val right: Tree?)
 
-val n = 100_000
+const val n = 100_000
 
 val deepTree = generateSequence(Tree(null, null)) { prev ->
     Tree(prev, null)
@@ -18,29 +18,27 @@ class DeepRecursiveFunction<T, R>(
     val block: suspend DeepRecursiveScope<T, R>.(T) -> R
 )
 
-//@Suppress("UNCHECKED_CAST")
 class DeepRecursiveScope<T, R>(
     block: suspend DeepRecursiveScope<T, R>.(T) -> R,
-    value: T
+    private var value: T
 ) : Continuation<R> {
-    private val function = block as Function3<Any?, Any?, Continuation<R>, Any?>
-    private var result: Result<R> = Result.success(null) as Result<R>
-    private var value: Any? = value
+    @Suppress("UNCHECKED_CAST")
+    private val function = block as Function3<DeepRecursiveScope<T,R>, T, Continuation<R>, R?>
+    private var result = Result.success<R?>(null)
     private var cont: Continuation<R>? = this
 
     suspend fun callRecursive(value: T): R =
         suspendCoroutineUninterceptedOrReturn { cont ->
             this.cont = cont
             this.value = value
-            COROUTINE_SUSPENDED
+            return@suspendCoroutineUninterceptedOrReturn COROUTINE_SUSPENDED
         }
 
     fun runCallLoop(): R {
         while (true) {
             val result = this.result
             val cont = this.cont // null means done
-                ?: return result.getOrThrow()
-            // ~startCoroutineUninterceptedOrReturn
+                ?: return result.getOrThrow()!!
             val r = try {
                 function(this, value, cont)
             } catch (e: Throwable) {
@@ -48,7 +46,7 @@ class DeepRecursiveScope<T, R>(
                 continue
             }
             if (r !== COROUTINE_SUSPENDED)
-                cont.resume(r as R)
+                cont.resume(r!!)
         }
     }
 
@@ -62,7 +60,7 @@ class DeepRecursiveScope<T, R>(
 }
 
 operator fun <T, R> DeepRecursiveFunction<T, R>.invoke(value: T): R =
-    DeepRecursiveScope<T, R>(block, value).runCallLoop()
+    DeepRecursiveScope(block, value).runCallLoop()
 
 val depth = DeepRecursiveFunction<Tree?, Int> { t ->
     if (t == null) 0 else maxOf(
