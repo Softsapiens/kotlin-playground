@@ -4,14 +4,27 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Default
+import mu.KotlinLogging
+import java.lang.Thread.sleep
+
+
+val logger = KotlinLogging.logger {}
 
 object CorPlayground {
     @Test
+    // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/
     fun play1() {
-        runBlocking {
-            val c1 = launch { co1() }
-            val c2 = async { co2() }
-            co3()
+        runBlocking(Default) {
+            logger.info { "Starting" }
+            val c1 = launch { co("launched", 101L) }
+            val c2 = async { co("async",100L) }
+            async{
+                logger.info { "sleeping" }
+                sleep(1000)
+                logger.info { "awaked" }
+            }
+            co("normal", 50L)
         }
     }
 
@@ -56,22 +69,27 @@ object CorPlayground {
     }
 }
 
+suspend fun co(n: String, w: Long): Long {
+    delay(w)
+    logger.info{"$n has waited $w millis"}
+    return System.currentTimeMillis()
+}
 
 suspend fun co1(): Long {
     delay(500L)
-    println("${Thread.currentThread()} -  col1")
+    logger.info{"col1"}
     return System.currentTimeMillis()
 }
 
 suspend fun co2(): Long {
     delay(400L)
-    println("${Thread.currentThread()} -  col2")
+    logger.info { "col2" }
     return System.currentTimeMillis()
 }
 
 suspend fun co3(): Long {
     delay(200L)
-    println("${Thread.currentThread()} -  col3")
+    logger.info("${Thread.currentThread()} -  col3")
     return System.currentTimeMillis()
 }
 
