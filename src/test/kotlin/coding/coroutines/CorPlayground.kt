@@ -14,7 +14,7 @@ val logger = KotlinLogging.logger {}
 object CorPlayground {
     @Test
     // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/
-    fun play1() {
+    fun playDispatchers() {
         runBlocking(Default) {
             logger.info { "Starting" }
             val c1 = launch { co("launched", 101L) }
