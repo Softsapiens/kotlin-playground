@@ -5,11 +5,11 @@
     <groupId>softsapiens.kotlin.coding</groupId>
     <artifactId>kotlin-playground</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
+    <name>kotlin-playground</name>
     <description>Kotlin Playground</description>
     <properties>
         <java.version>11</java.version>
-        <kotlin.version>1.7.20</kotlin.version>
+        <kotlin.version>1.6.21</kotlin.version>
         <junit-jupiter.version>5.9.0</junit-jupiter.version>
     </properties>
     <dependencies>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.6</version>
+            <version>1.4.4</version>
         </dependency>
     </dependencies>
 
@@ -66,6 +66,7 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
                 <configuration>
                     <args>
                         <arg>-Xjsr305=strict</arg>
